@@ -1,0 +1,43 @@
+DROP TABLE mySecondQuery;
+DROP TABLE ManTable;
+DROP TABLE WomanTable;
+DROP TABLE ResultTable;
+
+SELECT COUNT(gender) AS 'M', academicDeptID INTO ManTable
+    FROM Faculty 
+	WHERE gender='m' 
+	GROUP BY academicDeptID 
+	ORDER BY academicDeptID
+;
+
+SELECT COUNT(gender) AS 'F', academicDeptID INTO WomanTable
+    FROM Faculty 
+	WHERE gender='f' 
+	GROUP BY academicDeptID 
+	ORDER BY academicDeptID
+;
+	
+CREATE TABLE mySecondQuery (
+    id INTEGER PRIMARY KEY,
+    Department TEXT 
+);
+
+INSERT INTO mySecondQuery ( id, Department) 
+	SELECT id, name 
+	FROM AcademicDepts
+;
+
+SELECT mySecondQuery.*, M.M, F.F INTO ResultTable
+	FROM mySecondQuery
+	LEFT JOIN ManTable AS M ON M.academicDeptID=mySecondQuery.id
+	LEFT JOIN WomanTable AS F ON F.academicDeptID=mySecondQuery.id
+;
+
+UPDATE ResultTable SET M = 0 WHERE M IS NULL AND F IS NOT NULL;
+UPDATE ResultTable SET F = 0 WHERE F IS NULL AND M IS NOT NULL;    
+ 
+
+ALTER TABLE ResultTable ADD "M%" AS ((M*100) / (M + F));
+ALTER TABLE ResultTable ADD "F%" AS ((F*100) / (M + F));
+
+SELECT * FROM ResultTable;
