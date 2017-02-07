@@ -1,0 +1,11 @@
+-- Basic queries determining who is elibile for a new computer in Boston University's Questrom School of Business.
+-- Second query breaks it down by department.
+
+SELECT distinct(`BIOS_SERIAL_NUMBER`),`USER`, `WARRANTY_START`, `CS_MODEL`, `Department` FROM `Q_Master`  
+	WHERE (ABS(DATEDIFF(`WARRANTY_START`, "2017-07-01")) >= 1095) 
+	GROUP BY `Department` 
+
+
+SELECT `Department`, COUNT(DISTINCT(`BIOS_SERIAL_NUMBER`)) AS Amount FROM `Q_Master`  
+	WHERE (ABS(DATEDIFF(`WARRANTY_START`, "2017-07-01")) >= 1095) 
+	GROUP BY `Department` 
